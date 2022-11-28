@@ -1,0 +1,18 @@
+# Copyright 2021 Hewlett Packard Enterprise Development LP
+
+[Unit]
+Description=Grafana
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+ExecStartPre=/usr/sbin/grafana.sh %t/%n-pid %t/%n-cid grafana
+ExecStart=/usr/bin/podman start grafana
+ExecStop=/usr/bin/podman stop --ignore -t 10 grafana
+PIDFile=%t/%n-pid
+Type=forking
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target

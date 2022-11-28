@@ -1,0 +1,18 @@
+# Copyright 2021 Hewlett Packard Enterprise Development LP
+
+[Unit]
+Description=Grok-exporter
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+ExecStartPre=/usr/sbin/grok-exporter.sh %t/%n-pid %t/%n-cid grok-exporter
+ExecStart=/usr/bin/podman start grok-exporter
+ExecStop=/usr/bin/podman stop --ignore -t 10 grok-exporter
+PIDFile=%t/%n-pids
+Type=forking
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target
