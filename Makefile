@@ -56,7 +56,7 @@ rpm_package_source:
 clean:
 	$(RM) -rf $(BUILD_DIR)
 
-rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh
+rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh systemd/config.yml
 	rpmbuild --nodeps \
 		--define "_topdir $(BUILD_DIR)" \
 	    --define "_sourcedir $(BUILD_DIR)/SOURCES" \

@@ -2,7 +2,7 @@ global:
     config_version: 2
 input:
     type: file
-    path: ./example/example.log
+    path: /grok/example.log
     readall: true
 grok:
     patterns_dir: ./patterns
