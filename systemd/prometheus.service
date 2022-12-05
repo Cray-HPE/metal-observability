@@ -1,0 +1,19 @@
+# Copyright 2021 Hewlett Packard Enterprise Development LP
+
+[Unit]
+Description=Prometheus
+Requires=network-online.target
+# Add any service required to be present before running this service.
+After=network-online.target
+
+[Service]
+Restart=on-failure
+ExecStartPre=/usr/sbin/prometheus.sh %t/%n-pid %t/%n-cid prometheus 
+ExecStart=/usr/bin/podman start prometheus
+ExecStop=/usr/bin/podman stop --ignore -t 10 prometheus
+PIDFile=%t/%n-pid
+Type=forking
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target
