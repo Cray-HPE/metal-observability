@@ -92,7 +92,6 @@ cp %{SOURCE1} grok-exporter.service
 sed -e 's,@@grok-exporter-image@@,%{grok_image},g' \
     -e 's,@@grok-exporter-path@@,%{imagedir}/%{grok_file},g' \
     %{SOURCE4} > grok-exporter.sh \
-    %{SOURCE7} > config.yml
 # Prometheus
 cp %{SOURCE2} prometheus.service
 sed -e 's,@@prometheus-image@@,%{prometheus_image},g' \
