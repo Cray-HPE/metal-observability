@@ -34,6 +34,7 @@ Source4: grok-exporter.sh
 Source5: prometheus.sh
 Source6: grafana.sh
 Source7: config.yml
+Source8: prometheus.yml
 Source: %{name}-%{version}.tar.bz2
 Vendor: Hewlett Packard Enterprise Development LP
 BuildRequires: coreutils
@@ -89,12 +90,13 @@ cd "%{name}-%{version}"
 %build  
 # Grok-exporter
 cp %{SOURCE1} grok-exporter.service
+cp %{SOURCE7} config.yml
 sed -e 's,@@grok-exporter-image@@,%{grok_image},g' \
     -e 's,@@grok-exporter-path@@,%{imagedir}/%{grok_file},g' \
     %{SOURCE4} > grok-exporter.sh \
-    %{SOURCE7} > config.yml
 # Prometheus
 cp %{SOURCE2} prometheus.service
+cp %{SOURCE8} prometheus.yml
 sed -e 's,@@prometheus-image@@,%{prometheus_image},g' \
     -e 's,@@prometheus-path@@,%{imagedir}/%{prometheus_file},g' \
     %{SOURCE5} > prometheus.sh
@@ -113,7 +115,7 @@ skopeo --override-arch amd64 --override-os linux copy docker://%{skopeo_image}  
 install -D -m 0644 -t %{buildroot}%{_unitdir} grok-exporter.service
 install -D -m 0644 -t %{buildroot}%{_unitdir} prometheus.service
 install -D -m 0644 -t %{buildroot}%{_unitdir} grafana.service
-install -D -m 0755 -t %{buildroot}%{_sbindir} grok-exporter.sh prometheus.sh grafana.sh config.yml
+install -D -m 0755 -t %{buildroot}%{_sbindir} grok-exporter.sh prometheus.sh grafana.sh config.yml prometheus.yml
 install -D -m 0644 -t %{buildroot}%{imagedir} \
     %{grok_file} \
 	%{prometheus_file} \
@@ -129,6 +131,7 @@ rm -f \
     prometheus.sh \
 	grafana.sh \
         config.yml \
+     prometheus.yml \
 	%{grok_file} \
     %{prometheus_file} \
     %{grafana_file} \
@@ -163,6 +166,7 @@ rm -f \
 %{_sbindir}/prometheus.sh
 %{_sbindir}/grafana.sh
 %{_sbindir}/config.yml
+%{_sbindir}/prometheus.yml
 %{imagedir}/%{grok_file}
 %{imagedir}/%{prometheus_file}
 %{imagedir}/%{grafana_file}

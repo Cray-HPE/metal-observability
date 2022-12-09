@@ -38,7 +38,7 @@ PROMETHEUS_CIDFILE="$2"
 PROMETHEUS_CONTAINER_NAME="${3-prometheus}"  
 PROMETHEUS_VOLUME_NAME="${4:-${PROMETHEUS_CONTAINER_NAME}-data}"
 
-PROMETHEUS_VOLUME_MOUNT="/prometheus-data:rw,exec"
+PROMETHEUS_VOLUME_MOUNT="/etc/prometheus/prometheus.yml:rw,exec"
 
 # Create Prometheus volume if not already present
 if ! podman volume inspect "$PROMETHEUS_VOLUME_NAME" &>/dev/null; then
@@ -54,12 +54,6 @@ if ! podman volume inspect "$PROMETHEUS_VOLUME_NAME" &>/dev/null; then
     podman run --rm --network host \
         -v "${PROMETHEUS_VOLUME_NAME}:${PROMETHEUS_VOLUME_MOUNT}" \
         "$PROMETHEUS_IMAGE" /bin/sh -c "
-mkdir -p /prometheus-data/etc
-cat > /prometheus-data/etc/prometheus.properties << EOF
-prometheus.onboarding.enabled=false
-prometheus.scripts.allowCreation=true
-prometheus.security.randompassword=false
-EOF
 chown -Rv 200:200 /prometheus-data
 chmod -Rv u+rwX,go+rX,go-w /prometheus-data
 " || exit
@@ -86,7 +80,7 @@ if ! podman inspect --type container "$PROMETHEUS_CONTAINER_NAME" &>/dev/null; t
         --cidfile "$PROMETHEUS_CIDFILE" \
         --cgroups=no-conmon \
         --network host \
-        --volume "${PROMETHEUS_VOLUME_NAME}:${PROMETHEUS_VOLUME_MOUNT}" \
+        --volume "/usr/sbin/prometheus.yml:${PROMETHEUS_VOLUME_MOUNT}" \
         --name "$PROMETHEUS_CONTAINER_NAME" \
         "$PROMETHEUS_IMAGE" || exit
     podman inspect "$PROMETHEUS_CONTAINER_NAME" || exit
