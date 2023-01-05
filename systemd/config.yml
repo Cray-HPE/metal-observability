@@ -2,7 +2,7 @@ global:
     config_version: 3
 input:
     type: file
-    path: /grok_exporter/example/console.ncn-.*
+    path: /grok_exporter/example/conman/console.*
     readall: true
     fail_on_missing_logfile: false
 grok_patterns:

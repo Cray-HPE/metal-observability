@@ -48,7 +48,7 @@ if ! podman volume inspect "$GROK_VOLUME_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GROK_IMAGE_PATH" || exit
         # get the tag
-        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=GROK Repository Manager") 
+        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="Name=grok_exporter") 
         # tag the image
         podman tag "$GROK_IMAGE_ID" "$GROK_IMAGE"
     fi
@@ -76,7 +76,7 @@ if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GROK_IMAGE_PATH"
         # get the tag
-        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=GROK Repository Manager")
+        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="Name=grok_exporter")
         # tag the image
         podman tag "$GROK_IMAGE_ID" "$GROK_IMAGE"
     fi
@@ -86,7 +86,7 @@ if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
         --cgroups=no-conmon \
         --network host \
         --volume "/usr/sbin/config.yml:${GROK_VOLUME_MOUNT}" \
-        --volume "/var/log/conman/console.ncn-.*:/grok_exporter/example/console.ncn-.*" \
+        --volume "/var/log/conman:/grok_exporter/example/conman" \
         --name "$GROK_CONTAINER_NAME" \
         "$GROK_IMAGE" || exit
     podman inspect "$GROK_CONTAINER_NAME" || exit

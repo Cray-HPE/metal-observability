@@ -48,7 +48,7 @@ if ! podman volume inspect "$GRAFANA_VOLUME_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GRAFANA_IMAGE_PATH" || exit
         # get the tag
-        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=GRAFANA Repository Manager") 
+        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=8.5.9") 
         # tag the image
         podman tag "$GRAFANA_IMAGE_ID" "$GRAFANA_IMAGE"
     fi
@@ -78,7 +78,7 @@ if ! podman inspect --type container "$GRAFANA_CONTAINER_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GRAFANA_IMAGE_PATH"
         # get the tag
-        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=GRAFANA Repository Manager")
+        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=8.5.9")
         # tag the image
         podman tag "$GRAFANA_IMAGE_ID" "$GRAFANA_IMAGE"
     fi

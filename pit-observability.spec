@@ -105,7 +105,7 @@ cp %{SOURCE3} grafana.service
 sed -e 's,@@grafana-image@@,%{grafana_image},g' \
     -e 's,@@grafana-path@@,%{imagedir}/%{grafana_file},g' \
     %{SOURCE6} > grafana.sh
-# Consder switching to skopeo copy --all docker://<src> oci-archive:<dest>
+# Consider switching to skopeo copy --all docker://<src> oci-archive:<dest>
 skopeo --override-arch amd64 --override-os linux copy docker://%{grok_image}  docker-archive:%{grok_file}
 skopeo --override-arch amd64 --override-os linux copy docker://%{prometheus_image}     docker-archive:%{prometheus_file}
 skopeo --override-arch amd64 --override-os linux copy docker://%{grafana_image}        docker-archive:%{grafana_file}
