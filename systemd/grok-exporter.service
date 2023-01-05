@@ -11,6 +11,9 @@ ExecStartPre=/usr/sbin/grok-exporter.sh %t/%n-pid %t/%n-cid grok-exporter
 ExecStart=/usr/bin/podman start grok-exporter
 ExecStop=/usr/bin/podman stop --ignore -t 10 grok-exporter
 PIDFile=%t/%n-pid
+# all remaining processes in the control group of this unit will be killed on unit stop
+# https://www.suse.com/support/kb/doc/?id=000020394
+KillMode=control-group
 Type=forking
 TimeoutStartSec=900
 

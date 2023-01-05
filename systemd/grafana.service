@@ -11,6 +11,9 @@ ExecStartPre=/usr/sbin/grafana.sh %t/%n-pid %t/%n-cid grafana
 ExecStart=/usr/bin/podman start grafana
 ExecStop=/usr/bin/podman stop --ignore -t 10 grafana
 PIDFile=%t/%n-pid
+# all remaining processes in the control group of this unit will be killed on unit stop
+# https://www.suse.com/support/kb/doc/?id=000020394
+KillMode=control-group
 Type=forking
 TimeoutStartSec=900
 
