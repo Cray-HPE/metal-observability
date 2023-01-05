@@ -22,6 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+set -euf -o pipefail
 
 GROK_IMAGE="@@grok-exporter-image@@"
 GROK_IMAGE_PATH="@@grok-exporter-path@@"
