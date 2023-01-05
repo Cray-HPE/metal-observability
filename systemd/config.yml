@@ -1,17 +1,254 @@
 global:
-    config_version: 2
+    config_version: 3
 input:
     type: file
-    path: /grok/example.log
+    path: /grok_exporter/example/console.ncn-.*
     readall: true
-grok:
-    patterns_dir: ./patterns
+    fail_on_missing_logfile: false
+grok_patterns:
+  - 'PCIEPORT [0-9]{4}:[0-9a-z]{2}:[0-9a-z]{2}.[0-9]:'
+  - 'HUB_PORT [0-9]-(([0-9].[0-9])|[0-9]):[0-9].[0-9]'
+  - 'DXE_STATUS [A-Za-z]*'
+  - 'DEVICE_NAME [0-9A-Za-z]*'
+  - 'DRACUT dracut-initqueue[\[0-9]*\]'
+  - 'MESSAGE QLogic PXE ROM|Intel Boot Agent'
+  - 'USB [0-9]-[0-9].[0-9]-port[0-9]'
+  - 'USB_PORT [0-9]-[0-9].([0-9].[0-9]|[0-9])'
+  - 'ERROR_CODE -[0-9]*'
+  - 'ADDRESS [0-9]*'
+  - 'ERROR_MSG [a-zA-Z]* (reset|enable|disable)'
 metrics:
     - type: counter
-      name: grok_example_lines_total
-      help: Counter metric example with labels.
-      match: '%{DATE} %{TIME} %{USER:user} %{NUMBER}'
+      name: cloud_init_authentication_failed_count
+      help: Total number of authentication failure for cloud-init, error execution phase control-plane-prepare/download-certs has error downloading coding secret data with provided key.
+      match: 'authentication failed'
       labels:
-          user: '{{.user}}'
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: pool_allocation_failed_count
+      help: Total count of failed to allocate 224 bytes
+      match: 'AllocatePool: failed to allocate 224 bytes'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: hub_ext_port_status_failed_count
+      help: Total times hub external port failed, partitioned by port.
+      match: 'hub %{HUB_PORT:port}: hub_ext_port_status failed'
+      labels:
+          logfile: '{{base .logfile}}'
+          hub_port: '{{.port}}'
+    - type: counter
+      name: dxe_tpm_boot_handler_measure_failed_count
+      help: Total times Dxe tmp boot handler failed, partitioned by status.
+      match: 'DxeTpm2MeasureBootHandler: PeCoffLoaderGetImageInfo failed! Status = %{DXE_STATUS:status}'
+      labels:
+          logfile: '{{base .logfile}}'
+          dxe_status: '{{.status}}'
+    - type: counter
+      name: dracut_initqueue_dhcp_interface_failed_warning_count
+      help: Total times dracut-initqueue warning dhcp for failed interface, partitioned by interface.
+      match: 'Warning: dhcp for interface %{DEVICE_NAME:name} failed'
+      labels:
+          logfile: '{{base .logfile}}'
+          device_name: '{{.name}}'
+    - type: counter
+      name: dracut_initqueue_dhcp_packet_unsend_count
+      help: Total count of dracut-initqueue unable to send dhcp packet due to buffer space not available.
+      match: 'wicked: unable to send dhcp packet: No buffer space available'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: dracut_initqueue_dhcp_discovery_failed_count
+      help: Total count dracut-initqueue dhcp4 discovery failed, partitioned by interface.
+      match: 'wicked: %{DEVICE_NAME:name}: DHCP4 discovery failed'
+      labels:
+          logfile: '{{base .logfile}}'
+          device_name: '{{.name}}'
+    - type: counter
+      name: dhcp_server_boot_info_discovery_failure_count
+      help: Total count of failures for dicovering the boot information for dhcp server.
+      match: 'Error: Could not discover the boot information for DHCP server'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: bmc_reset_dhcp_request_notice_count
+      help: Total count of BMC is being RESET in order to cease and desist any further DHCPREQUESTs from the BMC.
+      match: 'NOTICE: The BMC is being RESET in order to cease and desist any further DHCPREQUESTs from the BMC.'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: error_count
+      help: Total error word count.
+      match: 'error|Error'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: failure_count
+      help: Total failure word count.
+      match: 'fail|Fail'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: warning_count
+      help: Total warning word count.
+      match: 'Warn|warn'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: unknown_count
+      help: Total unknown word count.
+      match: 'unknown|Unknown'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: not_responding_count
+      help: Total not responding word count.
+      match: 'not responding'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name:  pxe_server_response_timeout_count
+      help: Total count of PXE server response timeout error at starting PXE over IPv4 on systems.
+      match: 'PXE-E18: Server response timeout.'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name:  pxe_no_offer_received_count
+      help: Total count of PXE no offer received error.
+      match: 'PXE-E16: No offer received.'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name:  pxe_unexpected_network_error_count
+      help: Total count of PXE unexpected network error.
+      match: 'PXE-E99: Unexpected network error.'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name:  pxe_remote_boot_cancelled_count
+      help: Total count of PXE remote boot cancelled error.
+      match: 'PXE-E21: Remote boot cancelled.'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name:  pxe_exit_error
+      help: Total count of exiting Qlogic PXE ROM or intel boot agent error.
+      match: 'PXE-M0F: Exiting %{MESSAGE:message}.'
+      labels:
+          logfile: '{{base .logfile}}'
+          message: '{{.message}}'
+    - type: counter
+      name: cloud_init_dns_setting_dump_count
+      help: Total count of current DNS setting dump for clud-init.
+      match: 'Dumping current settings for DNS:'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: IO_error_blk_update_request_count
+      help: Total count of I/O error for block update request.
+      match: 'blk_update_request: I/O error'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: enumerate_usb_device_error_count
+      help: Total count of unable to enumerate USB device.
+      match: 'usb %{USB:usb}: unable to enumerate USB device'
+      labels:
+          logfile: '{{base .logfile}}'
+          usb_port: '{{.usb}}'
+    - type: counter
+      name: usb_device_descriptor_read_error_count
+      help: Total count of usb device desriptor read/64 error with an error code.
+      match: 'usb %{USB_PORT:usb}: device descriptor read/64, error %{ERROR_CODE:code}'
+      labels:
+          logfile: '{{base .logfile}}'
+          usb_port: '{{.usb}}'
+          error_code: '{{.code}}'
+    - type: counter
+      name: usb_device_address_accept_error_count
+      help: Total count of usb device not accepting particular address error with an error code.
+      match: 'usb %{USB_PORT:usb}: device not accepting address %{ADDRESS:address}, error %{ERROR_CODE:code}'
+      labels:
+          logfile: '{{base .logfile}}'
+          usb_port: '{{.usb}}'
+          error_code: '{{.code}}'
+          address: '{{.address}}'
+    - type: counter
+      name: no_reboot_flag_reset_failure_count
+      help: Total count of NO_REBOOT flag reset failure because device disabled by hardware/BIOS
+      match: 'unable to reset NO_REBOOT flag, device disabled by hardware/BIOS'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: ISOFS_read_inode_blk_error_count
+      help: Total count of ISOFS unable to read i-node block
+      match: 'ISOFS: unable to read i-node block'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: squashfs_read_data_failed_count
+      help: Total count of squshfs_read_data failed error to read block 0x49c8c8ba due to corrupt data.
+      match: 'SQUASHFS error'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: usb_device_port1_error
+      help: Total count of usb device port1 error with messages such as Cannot reset, disable, or enable along with error codes.
+      match: 'usb %{USB:usb}: %{ERROR_MSG:msg}'
+      labels:
+          logfile: '{{base .logfile}}'
+          usb_port: '{{.usb}}'
+          error_msg: '{{.msg}}'
+    - type: counter
+      name: usb_device_not_responding_setup_address_count
+      help: Total count of usb device not responding to the setup adddress.
+      match: 'usb %{USB_PORT:usb}: Device not responding to setup address.'
+      labels:
+          logfile: '{{base .logfile}}'
+          usb_port: '{{.usb}}'
+    - type: counter
+      name: usb_device_disconnect_error_count
+      help: Total count of usb device disconnected along with the device number.
+      match: 'usb %{USB_PORT:usb}: USB disconnect, device number %{ADDRESS:num}'
+      labels:
+          logfile: '{{base .logfile}}'
+          usb_port: '{{.usb}}'
+          device_number: '{{.num}}'
+    - type: counter
+      name: dracut_initqueue_device_wipe_usb_ignore_count
+      help: Total count of dracut-initqueue USB device ignored during local storage device wipe commencing.
+      match: 'Warning: local storage device wipe commencing (USB devices are ignored)...'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: alex_install_command_log_stage_one_two_three_four
+      help: count of commands that say stage.1.2.3.4.10
+      match: 'stage.1.2.3.4.10'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: alex_install_command_log_stage_one_two_three_four_1
+      help: count of commands that say stage.1.2.3.4.1
+      match: 'stage.1.2.3.4.1'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: alex_install_command_log_stage_one_two_three_four_2
+      help: count of commands that say stage.1.2.3.4.2
+      match: 'stage.1.2.3.4.2'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: alex_install_command_log_stage_one_two_three_four_3
+      help: count of commands that say stage.1.2.3.4.3
+      match: 'stage.1.2.3.4.3'
+      labels:
+          logfile: '{{base .logfile}}'
+    - type: counter
+      name: alex_install_command_log_stage_one_two_three_four_4
+      help: count of commands that say stage.1.2.3.4.4
+      match: 'stage.1.2.3.4.4'
+      labels:
+          logfile: '{{base .logfile}}'
 server:
     port: 9144

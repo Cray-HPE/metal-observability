@@ -38,7 +38,7 @@ GROK_CIDFILE="$2"
 GROK_CONTAINER_NAME="${3-grok-exporter}"  
 GROK_VOLUME_NAME="${4:-${GROK_CONTAINER_NAME}-data}"
 
-GROK_VOLUME_MOUNT="/grok/config.yml:rw,exec"
+GROK_VOLUME_MOUNT="/grok_exporter/config.yml:rw,exec"
 
 # Create grok-exporter volume if not already present
 if ! podman volume inspect "$GROK_VOLUME_NAME" &>/dev/null; then
@@ -67,7 +67,7 @@ fi
 # always ensure pid file is fresh
 rm -f "$GROK_PIDFILE"
 
-# Create Nexus container
+# Create Grok-exporter container
 if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
     rm -f "$GROK_CIDFILE" || exit
     # Load grok-exporter image if it doesn't already exist
@@ -85,7 +85,7 @@ if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
         --cgroups=no-conmon \
         --network host \
         --volume "/usr/sbin/config.yml:${GROK_VOLUME_MOUNT}" \
-        --volume "/var/log/example.log:/grok/example.log" \
+        --volume "/var/log/conman/console.ncn-.*:/grok_exporter/example/console.ncn-.*" \
         --name "$GROK_CONTAINER_NAME" \
         "$GROK_IMAGE" || exit
     podman inspect "$GROK_CONTAINER_NAME" || exit

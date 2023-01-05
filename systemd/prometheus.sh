@@ -47,7 +47,7 @@ if ! podman volume inspect "$PROMETHEUS_VOLUME_NAME" &>/dev/null; then
         # load the image
         podman load -i "$PROMETHEUS_IMAGE_PATH" || exit
         # get the tag
-        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=Nexus Repository Manager") 
+        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=PROMETHEUS Repository Manager") 
         # tag the image
         podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
     fi
@@ -63,7 +63,7 @@ fi
 # always ensure pid file is fresh
 rm -f "$PROMETHEUS_PIDFILE"
 
-# Create Nexus container
+# Create Prometheus container
 if ! podman inspect --type container "$PROMETHEUS_CONTAINER_NAME" &>/dev/null; then
     rm -f "$PROMETHEUS_CIDFILE" || exit
     # Load prometheus image if it doesn't already exist
