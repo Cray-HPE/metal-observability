@@ -10,7 +10,7 @@ Restart=on-failure
 ExecStartPre=/usr/sbin/grok-exporter.sh %t/%n-pid %t/%n-cid grok-exporter
 ExecStart=/usr/bin/podman start grok-exporter
 ExecStop=/usr/bin/podman stop --ignore -t 10 grok-exporter
-PIDFile=%t/%n-pids
+PIDFile=%t/%n-pid
 Type=forking
 TimeoutStartSec=900
 
