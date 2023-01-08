@@ -25,7 +25,7 @@ Name: %(echo $NAME)
 License: MIT
 Summary: Daemon for running Nexus repository manager
 BuildArch: x86_64
-Version: 1.0.1
+Version: %(echo $VERSION)
 Release: 1
 Source1: grok-exporter.service
 Source2: prometheus.service

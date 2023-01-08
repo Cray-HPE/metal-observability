@@ -44,7 +44,7 @@ pipeline {
         DOCKER_ARGS = getDockerBuildArgs(name: getRepoName(), description: 'A podman image for nexus')
         NAME = getRepoName()
         IS_STABLE = "${isStable}"
-        VERSION = sh(returnStdout: true, script: "git describe --tags | tr -s '-' '_' | tr -d '^v'").trim()
+        VERSION = sh(returnStdout: true, script: "git describe --tags | tr -s '-' '~' | tr -d '^v'").trim()
     }
 
     stages {

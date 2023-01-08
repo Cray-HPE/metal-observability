@@ -36,7 +36,7 @@ ROOTDIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 SPEC_NAME ?= ${NAME}
 SPEC_FILE ?= ${SPEC_NAME}.spec
 BUILD_DIR ?= $(CURDIR)/build
-SOURCE_NAME ?= ${SPEC_NAME}-1.0.1
+SOURCE_NAME ?= ${SPEC_NAME}-${VERSION}
 SOURCE_PATH := ${BUILD_DIR}/SOURCES/${SOURCE_NAME}.tar.bz2
 
 .PHONY: rpm clean
