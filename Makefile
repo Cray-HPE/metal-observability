@@ -49,6 +49,7 @@ prepare:
 	mkdir -p "$(BUILD_DIR)/SOURCES"
 	cp $(SPEC_FILE) $(BUILD_DIR)/SPECS/
 	cp -r systemd/* $(BUILD_DIR)/SOURCES/
+	cp -r grafana/* $(BUILD_DIR)/SOURCES/
 
 rpm_package_source:
 	tar --transform 'flags=r;s,^,/$(SOURCE_NAME)/,' --exclude .git --exclude dist -cvjf $(SOURCE_PATH) .
@@ -56,7 +57,7 @@ rpm_package_source:
 clean:
 	$(RM) -rf $(BUILD_DIR)
 
-rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh systemd/config.yml
+rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh systemd/config.yml grafana/csm-install-progress.json grafana/device-error.json grafana/dhcp-error.json grafana/pxe-error.json grafana/known-issues-message-frequency.json 
 	rpmbuild --nodeps \
 		--define "_topdir $(BUILD_DIR)" \
 	    --define "_sourcedir $(BUILD_DIR)/SOURCES" \

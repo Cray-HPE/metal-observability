@@ -35,6 +35,11 @@ Source5: prometheus.sh
 Source6: grafana.sh
 Source7: config.yml
 Source8: prometheus.yml
+Source9: csm-install-progress.json
+Source10: device-error.json 
+Source11: dhcp-error.json 
+Source12: pxe-error.json 
+Source13: known-issues-message-frequency.json
 Source: %{name}-%{version}.tar.bz2
 Vendor: Hewlett Packard Enterprise Development LP
 BuildRequires: coreutils
@@ -102,6 +107,11 @@ sed -e 's,@@prometheus-image@@,%{prometheus_image},g' \
     %{SOURCE5} > prometheus.sh
 # Grafana
 cp %{SOURCE3} grafana.service
+cp %{SOURCE9} csm-install-progress.json
+cp %{SOURCE10} device-error.json
+cp %{SOURCE11} dhcp-error.json
+cp %{SOURCE12} pxe-error.json
+cp %{SOURCE13} known-issues-message-frequency.json
 sed -e 's,@@grafana-image@@,%{grafana_image},g' \
     -e 's,@@grafana-path@@,%{imagedir}/%{grafana_file},g' \
     %{SOURCE6} > grafana.sh
@@ -115,7 +125,7 @@ skopeo --override-arch amd64 --override-os linux copy docker://%{skopeo_image}  
 install -D -m 0644 -t %{buildroot}%{_unitdir} grok-exporter.service
 install -D -m 0644 -t %{buildroot}%{_unitdir} prometheus.service
 install -D -m 0644 -t %{buildroot}%{_unitdir} grafana.service
-install -D -m 0755 -t %{buildroot}%{_sbindir} grok-exporter.sh prometheus.sh grafana.sh config.yml prometheus.yml
+install -D -m 0755 -t %{buildroot}%{_sbindir} grok-exporter.sh prometheus.sh grafana.sh config.yml prometheus.yml csm-install-progress.json device-error.json dhcp-error.json pxe-error.json known-issues-message-frequency.json
 install -D -m 0644 -t %{buildroot}%{imagedir} \
     %{grok_file} \
 	%{prometheus_file} \
@@ -132,6 +142,11 @@ rm -f \
 	grafana.sh \
         config.yml \
      prometheus.yml \
+  csm-install-progress.json \
+     device-error.json \
+     dhcp-error.json \
+     pxe-error.json \
+known-issues-message-frequency.json \
 	%{grok_file} \
     %{prometheus_file} \
     %{grafana_file} \
@@ -167,6 +182,11 @@ rm -f \
 %{_sbindir}/grafana.sh
 %{_sbindir}/config.yml
 %{_sbindir}/prometheus.yml
+%{_sbindir}/csm-install-progress.json
+%{_sbindir}/device-error.json
+%{_sbindir}/dhcp-error.json
+%{_sbindir}/pxe-error.json
+%{_sbindir}/known-issues-message-frequency.json
 %{imagedir}/%{grok_file}
 %{imagedir}/%{prometheus_file}
 %{imagedir}/%{grafana_file}
