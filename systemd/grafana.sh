@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,6 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+set -euf -o pipefail
 
 GRAFANA_IMAGE="@@grafana-image@@"
 GRAFANA_IMAGE_PATH="@@grafana-path@@"
@@ -47,7 +48,7 @@ if ! podman volume inspect "$GRAFANA_VOLUME_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GRAFANA_IMAGE_PATH" || exit
         # get the tag
-        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=Grafana Repository Manager") 
+        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=8.5.9") 
         # tag the image
         podman tag "$GRAFANA_IMAGE_ID" "$GRAFANA_IMAGE"
     fi
@@ -69,7 +70,7 @@ fi
 # always ensure pid file is fresh
 rm -f "$GRAFANA_PIDFILE"
 
-# Create Nexus container
+# Create Grafana container
 if ! podman inspect --type container "$GRAFANA_CONTAINER_NAME" &>/dev/null; then
     rm -f "$GRAFANA_CIDFILE" || exit
     # Load grafana image if it doesn't already exist
@@ -77,7 +78,7 @@ if ! podman inspect --type container "$GRAFANA_CONTAINER_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GRAFANA_IMAGE_PATH"
         # get the tag
-        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=PROMETHEUS Repository Manager")
+        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=8.5.9")
         # tag the image
         podman tag "$GRAFANA_IMAGE_ID" "$GRAFANA_IMAGE"
     fi

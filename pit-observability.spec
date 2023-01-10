@@ -1,7 +1,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2022-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -25,7 +25,7 @@ Name: %(echo $NAME)
 License: MIT
 Summary: Daemon for running Nexus repository manager
 BuildArch: x86_64
-Version: 1.0.1
+Version: %(echo $VERSION)
 Release: 1
 Source1: grok-exporter.service
 Source2: prometheus.service
@@ -115,7 +115,7 @@ cp %{SOURCE13} known-issues-message-frequency.json
 sed -e 's,@@grafana-image@@,%{grafana_image},g' \
     -e 's,@@grafana-path@@,%{imagedir}/%{grafana_file},g' \
     %{SOURCE6} > grafana.sh
-# Consder switching to skopeo copy --all docker://<src> oci-archive:<dest>
+# Consider switching to skopeo copy --all docker://<src> oci-archive:<dest>
 skopeo --override-arch amd64 --override-os linux copy docker://%{grok_image}  docker-archive:%{grok_file}
 skopeo --override-arch amd64 --override-os linux copy docker://%{prometheus_image}     docker-archive:%{prometheus_file}
 skopeo --override-arch amd64 --override-os linux copy docker://%{grafana_image}        docker-archive:%{grafana_file}

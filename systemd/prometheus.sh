@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,6 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+set -euf -o pipefail
 
 PROMETHEUS_IMAGE="@@prometheus-image@@"
 PROMETHEUS_IMAGE_PATH="@@prometheus-path@@"
@@ -47,7 +48,7 @@ if ! podman volume inspect "$PROMETHEUS_VOLUME_NAME" &>/dev/null; then
         # load the image
         podman load -i "$PROMETHEUS_IMAGE_PATH" || exit
         # get the tag
-        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=Nexus Repository Manager") 
+        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.36.1") 
         # tag the image
         podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
     fi
@@ -63,7 +64,7 @@ fi
 # always ensure pid file is fresh
 rm -f "$PROMETHEUS_PIDFILE"
 
-# Create Nexus container
+# Create Prometheus container
 if ! podman inspect --type container "$PROMETHEUS_CONTAINER_NAME" &>/dev/null; then
     rm -f "$PROMETHEUS_CIDFILE" || exit
     # Load prometheus image if it doesn't already exist
@@ -71,7 +72,7 @@ if ! podman inspect --type container "$PROMETHEUS_CONTAINER_NAME" &>/dev/null; t
         # load the image
         podman load -i "$PROMETHEUS_IMAGE_PATH"
         # get the tag
-        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=PROMETHEUS Repository Manager")
+        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.36.1")
         # tag the image
         podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
     fi

@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP
+# (C) Copyright 2021-2023 Hewlett Packard Enterprise Development LP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -22,6 +22,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
+set -euf -o pipefail
 
 GROK_IMAGE="@@grok-exporter-image@@"
 GROK_IMAGE_PATH="@@grok-exporter-path@@"
@@ -38,7 +39,7 @@ GROK_CIDFILE="$2"
 GROK_CONTAINER_NAME="${3-grok-exporter}"  
 GROK_VOLUME_NAME="${4:-${GROK_CONTAINER_NAME}-data}"
 
-GROK_VOLUME_MOUNT="/grok/config.yml:rw,exec"
+GROK_VOLUME_MOUNT="/grok_exporter/config.yml:rw,exec"
 
 # Create grok-exporter volume if not already present
 if ! podman volume inspect "$GROK_VOLUME_NAME" &>/dev/null; then
@@ -47,7 +48,7 @@ if ! podman volume inspect "$GROK_VOLUME_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GROK_IMAGE_PATH" || exit
         # get the tag
-        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=GROK Repository Manager") 
+        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="Name=grok_exporter") 
         # tag the image
         podman tag "$GROK_IMAGE_ID" "$GROK_IMAGE"
     fi
@@ -67,7 +68,7 @@ fi
 # always ensure pid file is fresh
 rm -f "$GROK_PIDFILE"
 
-# Create Nexus container
+# Create Grok-exporter container
 if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
     rm -f "$GROK_CIDFILE" || exit
     # Load grok-exporter image if it doesn't already exist
@@ -75,7 +76,7 @@ if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
         # load the image
         podman load -i "$GROK_IMAGE_PATH"
         # get the tag
-        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="name=GROK Repository Manager")
+        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="Name=grok_exporter")
         # tag the image
         podman tag "$GROK_IMAGE_ID" "$GROK_IMAGE"
     fi
@@ -85,7 +86,7 @@ if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
         --cgroups=no-conmon \
         --network host \
         --volume "/usr/sbin/config.yml:${GROK_VOLUME_MOUNT}" \
-        --volume "/var/log/example.log:/grok/example.log" \
+        --volume "/var/log/conman:/grok_exporter/example/conman" \
         --name "$GROK_CONTAINER_NAME" \
         "$GROK_IMAGE" || exit
     podman inspect "$GROK_CONTAINER_NAME" || exit
