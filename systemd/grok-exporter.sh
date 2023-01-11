@@ -86,7 +86,8 @@ if ! podman inspect --type container "$GROK_CONTAINER_NAME" &>/dev/null; then
         --cgroups=no-conmon \
         --network host \
         --volume "/usr/sbin/config.yml:${GROK_VOLUME_MOUNT}" \
-        --volume "/var/log/conman:/grok_exporter/example/conman" \
+        --volume "/var/log/conman:/grok_exporter/logs/conman" \
+        --volume "/opt/cray/tests/install/logs/grok_exporter:/grok_exporter/logs/goss_tests" \
         --name "$GROK_CONTAINER_NAME" \
         "$GROK_IMAGE" || exit
     podman inspect "$GROK_CONTAINER_NAME" || exit
