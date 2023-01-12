@@ -57,7 +57,7 @@ rpm_package_source:
 clean:
 	$(RM) -rf $(BUILD_DIR)
 
-rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh systemd/config.yml grafana/csm-install-progress.json grafana/device-error.json grafana/dhcp-error.json grafana/pxe-error.json grafana/known-issues-message-frequency.json 
+rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh systemd/config.yml grafana/csm-install-progress.json grafana/device-error.json grafana/dhcp-error.json grafana/pxe-error.json grafana/known-issues-message-frequency.json grafana/datasource.yml grafana/dashboard.yml grafana/pit-goss-test.json
 	rpmbuild --nodeps \
 		--define "_topdir $(BUILD_DIR)" \
 	    --define "_sourcedir $(BUILD_DIR)/SOURCES" \

@@ -88,6 +88,14 @@ if ! podman inspect --type container "$GRAFANA_CONTAINER_NAME" &>/dev/null; then
         --cgroups=no-conmon \
         --network host \
         --volume "${GRAFANA_VOLUME_NAME}:${GRAFANA_VOLUME_MOUNT}" \
+        --volume "/usr/sbin/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml" \
+        --volume "/usr/sbin/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml" \
+        --volume "/usr/sbin/csm-install-progress.json:/etc/grafana/provisioning/dashboards/csm-install-progress.json" \
+        --volume "/usr/sbin/device-error.json:/etc/grafana/provisioning/dashboards/device-error.json" \
+        --volume "/usr/sbin/dhcp-error.json:/etc/grafana/provisioning/dashboards/dhcp-error.json" \
+        --volume "/usr/sbin/known-issues-message-frequency.json:/etc/grafana/provisioning/dashboards/known-issues-message-frequency.json" \
+        --volume "/usr/sbin/pxe-error.json:/etc/grafana/provisioning/dashboards/pxe-error.json" \
+        --volume "/usr/sbin/pit-goss-test.json:/etc/grafana/provisioning/dashboards/pit-goss-test.json" \
         --name "$GRAFANA_CONTAINER_NAME" \
         "$GRAFANA_IMAGE" || exit
     podman inspect "$GRAFANA_CONTAINER_NAME" || exit

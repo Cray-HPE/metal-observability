@@ -40,6 +40,9 @@ Source10: device-error.json
 Source11: dhcp-error.json 
 Source12: pxe-error.json 
 Source13: known-issues-message-frequency.json
+Source14: datasource.yml
+Source15: dashboard.yml
+Source16: pit-goss-test.json
 Source: %{name}-%{version}.tar.bz2
 Vendor: Hewlett Packard Enterprise Development LP
 BuildRequires: coreutils
@@ -112,6 +115,9 @@ cp %{SOURCE10} device-error.json
 cp %{SOURCE11} dhcp-error.json
 cp %{SOURCE12} pxe-error.json
 cp %{SOURCE13} known-issues-message-frequency.json
+cp %{SOURCE14} datasource.yml
+cp %{SOURCE15} dashboard.yml
+cp %{SOURCE16} pit-goss-test.json
 sed -e 's,@@grafana-image@@,%{grafana_image},g' \
     -e 's,@@grafana-path@@,%{imagedir}/%{grafana_file},g' \
     %{SOURCE6} > grafana.sh
@@ -125,7 +131,7 @@ skopeo --override-arch amd64 --override-os linux copy docker://%{skopeo_image}  
 install -D -m 0644 -t %{buildroot}%{_unitdir} grok-exporter.service
 install -D -m 0644 -t %{buildroot}%{_unitdir} prometheus.service
 install -D -m 0644 -t %{buildroot}%{_unitdir} grafana.service
-install -D -m 0755 -t %{buildroot}%{_sbindir} grok-exporter.sh prometheus.sh grafana.sh config.yml prometheus.yml csm-install-progress.json device-error.json dhcp-error.json pxe-error.json known-issues-message-frequency.json
+install -D -m 0755 -t %{buildroot}%{_sbindir} grok-exporter.sh prometheus.sh grafana.sh config.yml prometheus.yml csm-install-progress.json device-error.json dhcp-error.json pxe-error.json known-issues-message-frequency.json datasource.yml dashboard.yml pit-goss-test.json
 install -D -m 0644 -t %{buildroot}%{imagedir} \
     %{grok_file} \
 	%{prometheus_file} \
@@ -147,6 +153,9 @@ rm -f \
      dhcp-error.json \
      pxe-error.json \
 known-issues-message-frequency.json \
+     datasource.yml \
+     dashboard.yml \
+     pit-goss-test.json \
 	%{grok_file} \
     %{prometheus_file} \
     %{grafana_file} \
@@ -187,6 +196,9 @@ known-issues-message-frequency.json \
 %{_sbindir}/dhcp-error.json
 %{_sbindir}/pxe-error.json
 %{_sbindir}/known-issues-message-frequency.json
+%{_sbindir}/datasource.yml
+%{_sbindir}/dashboard.yml
+%{_sbindir}/pit-goss-test.json
 %{imagedir}/%{grok_file}
 %{imagedir}/%{prometheus_file}
 %{imagedir}/%{grafana_file}
