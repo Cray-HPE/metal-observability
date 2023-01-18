@@ -49,7 +49,7 @@ grok_patterns:
   - 'DESC [aA-zZ].*'
   - 'NUM [0-9].*'
   - 'TIME [0-9].[0-9]{9}'
-  - 'NODE pit'
+  - 'NODE [aA-zZ].*-pit'
   - 'CODE 0|1'
   - 'RESULT PASS|FAIL|SKIP|UNKNOWN'
   - 'SUITE [aA-zZ-].*'
@@ -295,14 +295,15 @@ metrics:
     - type: gauge
       name: goss_tests
       help: GOSS TESTS
-      match: '{"log_timestamp": "%{TIMESTAMP:tstmp}", "Product": "%{PRODUCT:prod}", "log_script": "%{SCRIPT:scrip}", "log_message": "Test result", "Description": "%{DESC:desc}", "Execution Time \(raw\)": %{NUM:raw}, "Execution Time \(seconds\)": %{NUM:time}, "Node": "%{NODE:node}", "Result Code": %{CODE:code}, "Result String": "%{RESULT:res}", "Source": ".*\/%{SUITE:suite}", "Test Name": "%{DESC:name}", "Test Summary": "%{DESC:sum}"}'
+      match: '{"log_timestamp": "%{TIMESTAMP:tstmp}", "Product": "%{PRODUCT:prod}", "log_script": "%{SCRIPT:scrip}", "log_message": "Test result", "Description": "%{DESC:desc}", "Execution Time \(nanoseconds\)": %{NUM:ns}, "Execution Time \(seconds\)": %{TIME:time}, "Node": "%{NODE:node}", "Result Code": %{CODE:code}, "Result String": "%{RESULT:res}", "Source": ".*\/%{SUITE:suite}", "Test Name": "%{DESC:name}", "Test Summary": "%{DESC:sum}"}'
+      path: /grok_exporter/logs/goss_tests/*
       value: '{{.code}}'
       labels:
           Timestamp: '{{.tstmp}}'
           Product: '{{.prod}}'
           Script: '{{.scrip}}'
           Description: '{{.desc}}'
-          Execution_raw: '{{.raw}}'
+          Execution_nanoseconds: '{{.ns}}'
           Execution_time: '{{.time}}'
           Node: '{{.node}}'
           Result: '{{.res}}'

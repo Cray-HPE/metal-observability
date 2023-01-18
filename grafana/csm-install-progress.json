@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -102,6 +102,14 @@
             ],
             "valueLabel": "logfile"
           }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "console.*"
+            }
+          }
         }
       ],
       "type": "bargauge"
@@ -177,6 +185,14 @@
               "logfile"
             ],
             "valueLabel": "logfile"
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "console.*"
+            }
           }
         }
       ],
@@ -331,6 +347,14 @@
               "logfile"
             ],
             "valueLabel": "logfile"
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "console.*"
+            }
           }
         }
       ],

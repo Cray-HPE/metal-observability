@@ -23,6 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 set -euf -o pipefail
+mkdir -p /opt/cray/tests/install/logs/grok_exporter
 
 GROK_IMAGE="@@grok-exporter-image@@"
 GROK_IMAGE_PATH="@@grok-exporter-path@@"

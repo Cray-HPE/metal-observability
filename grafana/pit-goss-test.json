@@ -25,8 +25,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 1860,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1673500529847,
+  "id": 8,
+  "iteration": 1674030396907,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -71,6 +71,7 @@
               "type": "value"
             }
           ],
+          "noValue": "Pass",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -118,9 +119,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$FailedProducts\", Result=~\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -196,9 +199,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -271,9 +276,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product!~\"$FailedProducts\", Result=\"PASS\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -346,9 +353,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$FailedProducts\", Result=\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -425,9 +434,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Result=~\"PASS|FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -454,22 +465,6 @@
               }
             ],
             "fields": {}
-          }
-        },
-        {
-          "id": "groupBy",
-          "options": {
-            "fields": {
-              "Execution_time": {
-                "aggregations": [
-                  "sum"
-                ],
-                "operation": "aggregate"
-              },
-              "Product": {
-                "aggregations": []
-              }
-            }
           }
         }
       ],
@@ -548,9 +543,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "goss_tests{Product!~\"$FailedProducts\", Result=~\"PASS\"}",
+          "exemplar": false,
+          "expr": "goss_tests{Product=~\"$Product\",Product!~\"$FailedProducts\", Suite!~\"$FailedSuites\", Test_name!~\"$FailedTests\", Result=~\"PASS\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         },
         {
@@ -559,10 +556,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "goss_tests{Product=~\"$FailedProducts\", Result=~\"FAIL\"}",
+          "exemplar": false,
+          "expr": "goss_tests{Product=~\"$FailedProducts\", Suite=~\"$FailedSuites\", Test_name=~\"$FailedTests\", Result=~\"FAIL\"}",
           "format": "table",
           "hide": false,
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "B"
         }
       ],
@@ -637,6 +636,9 @@
               "Result": {
                 "aggregations": [],
                 "operation": "groupby"
+              },
+              "Test_name": {
+                "aggregations": []
               },
               "Value": {
                 "aggregations": []
@@ -737,9 +739,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$FailedSuites\", Result=~\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -813,9 +817,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\",Suite=~\"$Suite\", Result=~\"PASS|FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -889,9 +895,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Suite!~\"$FailedSuites\", Result=\"PASS\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -965,9 +973,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\",Suite=~\"$FailedSuites\", Result=\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1044,9 +1054,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Result=~\"PASS|FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1179,9 +1191,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Suite=~\"$FailedSuites\", Result=~\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         },
         {
@@ -1190,10 +1204,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Suite!~\"$FailedSuites\", Result=~\"PASS\"}",
           "format": "table",
           "hide": false,
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "B"
         }
       ],
@@ -1356,10 +1372,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$FailedTests\", Result=~\"FAIL\"}",
           "format": "table",
+          "instant": true,
           "legendFormat": "__auto",
-          "range": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1432,9 +1450,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1508,9 +1528,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\", Test_name!~\"$FailedTests\", Result=\"PASS\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1584,9 +1606,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$FailedTests\", Result=\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1663,9 +1687,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\",Suite=~\"$Suite\",Test_name=~\"$Test\",Result=~\"PASS|FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -1771,9 +1797,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$FailedTests\", Result=\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         },
         {
@@ -1782,10 +1810,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\", Test_name!~\"$FailedTests\", Result=\"PASS\"}",
           "format": "table",
           "hide": false,
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "B"
         }
       ],
@@ -1931,9 +1961,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\", Test_name=~\"$FailedTests\", Node=~\"$Node\", Result=\"FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -2032,9 +2064,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\", Test_name!~\"$FailedTests\", Node=~\"$Node\", Result=\"PASS\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -2176,9 +2210,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\", Node=~\"$Node\", Result=~\"PASS|FAIL\"}",
           "format": "table",
-          "range": true,
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
@@ -2312,7 +2348,11 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
+          "editorMode": "code",
+          "exemplar": false,
           "expr": "goss_tests{Product=~\"$Product\", Suite=~\"$Suite\", Test_name=~\"$Test\", Node=~\"$Node\", Result=~\"PASS|FAIL\"}",
+          "instant": true,
+          "range": false,
           "refId": "A"
         }
       ],
