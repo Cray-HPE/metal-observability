@@ -53,10 +53,7 @@ if ! podman volume inspect "$PROMETHEUS_VOLUME_NAME" &>/dev/null; then
         podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
     fi
     podman run --rm --network host \
-        -v "${PROMETHEUS_VOLUME_NAME}:${PROMETHEUS_VOLUME_MOUNT}" \
         "$PROMETHEUS_IMAGE" /bin/sh -c "
-chown -Rv 200:200 /prometheus-data
-chmod -Rv u+rwX,go+rX,go-w /prometheus-data
 " || exit
     podman volume inspect "$PROMETHEUS_VOLUME_NAME" || exit
 fi
