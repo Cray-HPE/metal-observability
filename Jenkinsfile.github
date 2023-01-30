@@ -61,6 +61,12 @@ pipeline {
                 }
 
                 axes {
+
+                    axis {
+                        name 'architecture'
+                        values 'x86_64'
+                    }
+
                     axis {
                         name 'sleVersion'
                         values 15.3, 15.4
@@ -85,6 +91,9 @@ pipeline {
                     }
 
                     stage('Build: RPMs') {
+                        environment {
+                            ARCH = "${architecture}"
+                        }
                         agent {
                             docker {
                                 label 'docker'
@@ -104,11 +113,11 @@ pipeline {
                                 sles_major = "${sles_version_parts[0]}"
                                 sles_minor = "${sles_version_parts[1]}"
                                 publishCsmRpms(
-                                        arch: "x86_64", 
+                                        arch: "${architecture}",
                                         component: env.NAME, 
                                         isStable: isStable,
                                         os: "sle-${sles_major}sp${sles_minor}", 
-                                        pattern: "build/RPMS/x86_64/*.rpm",
+                                        pattern: "build/RPMS/${architecture}/*.rpm",
                                 )
                                 publishCsmRpms(
                                         arch: "src", 

@@ -24,11 +24,15 @@
 SHELL := /bin/bash
 
 ifeq ($(NAME),)
-NAME := $(shell basename $(shell pwd))
+export NAME := $(shell basename $(shell pwd))
+endif
+
+ifeq ($(ARCH),)
+export ARCH := x86_64
 endif
 
 ifeq ($(VERSION),)
-VERSION := $(shell git describe --tags | tr -s '-' '~' | tr -d '^v')
+export VERSION := $(shell git describe --tags | tr -s '-' '~' | tr -d '^v')
 endif
 
 ROOTDIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))

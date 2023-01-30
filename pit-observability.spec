@@ -24,7 +24,7 @@
 Name: %(echo $NAME)
 License: MIT
 Summary: Daemon for running Nexus repository manager
-BuildArch: x86_64
+BuildArch: %(echo $ARCH)
 Version: %(echo $VERSION)
 Release: 1
 Source1: grok-exporter.service
@@ -87,8 +87,8 @@ Requires: podman-cni-config
 %endif
 
 %description
-This RPM installs the daemon file for Nexus, launched through podman. This allows nexus to launch
-as a systemd service on a system.
+This installs systemd services as well as Podman images for launching
+Grafana, Prometheus, and Grok Exporter.
 
 %prep
 rm -fr "%{name}-%{version}"
