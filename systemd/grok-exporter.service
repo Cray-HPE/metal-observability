@@ -36,7 +36,7 @@ PIDFile=%t/%n-pid
 # https://www.suse.com/support/kb/doc/?id=000020394
 KillMode=control-group
 Type=forking
-TimeoutStartSec=900
+TimeoutStartSec=120
 
 [Install]
 WantedBy=multi-user.target
