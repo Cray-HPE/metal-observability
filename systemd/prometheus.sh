@@ -37,25 +37,17 @@ fi
 PROMETHEUS_PIDFILE="$1"
 PROMETHEUS_CIDFILE="$2"
 PROMETHEUS_CONTAINER_NAME="${3-prometheus}"  
-PROMETHEUS_VOLUME_NAME="${4:-${PROMETHEUS_CONTAINER_NAME}-data}"
 
 PROMETHEUS_VOLUME_MOUNT="/etc/prometheus/prometheus.yml:rw,exec"
 
-# Create Prometheus volume if not already present
-if ! podman volume inspect "$PROMETHEUS_VOLUME_NAME" &>/dev/null; then
-    # Load busybox image if it doesn't already exist
-    if ! podman image inspect "$PROMETHEUS_IMAGE" &>/dev/null; then
-        # load the image
-        podman load -i "$PROMETHEUS_IMAGE_PATH" || exit
-        # get the tag
-        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.36.1") 
-        # tag the image
-        podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
-    fi
-    podman run --rm --network host \
-        "$PROMETHEUS_IMAGE" /bin/sh -c "
-" || exit
-    podman volume inspect "$PROMETHEUS_VOLUME_NAME" || exit
+# Load busybox image if it doesn't already exist
+if ! podman image inspect "$PROMETHEUS_IMAGE" &>/dev/null; then
+    # load the image
+    podman load -i "$PROMETHEUS_IMAGE_PATH" || exit
+    # get the tag
+    PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.36.1")
+    # tag the image
+    podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
 fi
 
 # always ensure pid file is fresh

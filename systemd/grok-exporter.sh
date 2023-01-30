@@ -38,32 +38,17 @@ fi
 GROK_PIDFILE="$1"
 GROK_CIDFILE="$2"
 GROK_CONTAINER_NAME="${3-grok-exporter}"  
-GROK_VOLUME_NAME="${4:-${GROK_CONTAINER_NAME}-data}"
 
 GROK_VOLUME_MOUNT="/grok_exporter/config.yml:rw,exec"
 
-# Create grok-exporter volume if not already present
-if ! podman volume inspect "$GROK_VOLUME_NAME" &>/dev/null; then
-    # Load grok-exporter image if it doesn't already exist
-    if ! podman image inspect "$GROK_IMAGE" &>/dev/null; then
-        # load the image
-        podman load -i "$GROK_IMAGE_PATH" || exit
-        # get the tag
-        GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="Name=grok_exporter") 
-        # tag the image
-        podman tag "$GROK_IMAGE_ID" "$GROK_IMAGE"
-    fi
-    podman run --rm --network host \
-        -v "${GROK_VOLUME_NAME}:${GROK_VOLUME_MOUNT}" \
-        "$GROK_IMAGE" /bin/sh -c "
-mkdir -p /grok-exporter-data/etc
-cat > /grok-exporter-data/etc/grok-exporter.properties << EOF
-grok-exporter.onboarding.enabled=false
-grok-exporter.scripts.allowCreation=true
-grok-exporter.security.randompassword=false
-EOF
-" || exit
-    podman volume inspect "$GROK_VOLUME_NAME" || exit
+# Load grok-exporter image if it doesn't already exist
+if ! podman image inspect "$GROK_IMAGE" &>/dev/null; then
+    # load the image
+    podman load -i "$GROK_IMAGE_PATH" || exit
+    # get the tag
+    GROK_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="Name=grok_exporter")
+    # tag the image
+    podman tag "$GROK_IMAGE_ID" "$GROK_IMAGE"
 fi
 
 # always ensure pid file is fresh

@@ -37,34 +37,15 @@ fi
 GRAFANA_PIDFILE="$1"
 GRAFANA_CIDFILE="$2"
 GRAFANA_CONTAINER_NAME="${3-grafana}"  
-GRAFANA_VOLUME_NAME="${4:-${GRAFANA_CONTAINER_NAME}-data}"
 
-GRAFANA_VOLUME_MOUNT="/grafana-data:rw,exec"
-
-# Create Grafana volume if not already present
-if ! podman volume inspect "$GRAFANA_VOLUME_NAME" &>/dev/null; then
-    # Load grafana image if it doesn't already exist
-    if ! podman image inspect "$GRAFANA_IMAGE" &>/dev/null; then
-        # load the image
-        podman load -i "$GRAFANA_IMAGE_PATH" || exit
-        # get the tag
-        GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=8.5.9") 
-        # tag the image
-        podman tag "$GRAFANA_IMAGE_ID" "$GRAFANA_IMAGE"
-    fi
-    podman run --rm --network host \
-        -v "${GRAFANA_VOLUME_NAME}:${GRAFANA_VOLUME_MOUNT}" \
-        "$GRAFANA_IMAGE" /bin/sh -c "
-mkdir -p /grafana-data/etc
-cat > /grafana-data/etc/grafana.properties << EOF
-grafana.onboarding.enabled=false
-grafana.scripts.allowCreation=true
-grafana.security.randompassword=false
-EOF
-chown -Rv 200:200 /grafana-data
-chmod -Rv u+rwX,go+rX,go-w /grafana-data
-" || exit
-    podman volume inspect "$GRAFANA_VOLUME_NAME" || exit
+# Load grafana image if it doesn't already exist
+if ! podman image inspect "$GRAFANA_IMAGE" &>/dev/null; then
+    # load the image
+    podman load -i "$GRAFANA_IMAGE_PATH" || exit
+    # get the tag
+    GRAFANA_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=8.5.9")
+    # tag the image
+    podman tag "$GRAFANA_IMAGE_ID" "$GRAFANA_IMAGE"
 fi
 
 # always ensure pid file is fresh
@@ -87,7 +68,6 @@ if ! podman inspect --type container "$GRAFANA_CONTAINER_NAME" &>/dev/null; then
         --cidfile "$GRAFANA_CIDFILE" \
         --cgroups=no-conmon \
         --network host \
-        --volume "${GRAFANA_VOLUME_NAME}:${GRAFANA_VOLUME_MOUNT}" \
         --volume "/usr/sbin/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml" \
         --volume "/usr/sbin/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml" \
         --volume "/usr/sbin/csm-install-progress.json:/etc/grafana/provisioning/dashboards/csm-install-progress.json" \
