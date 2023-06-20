@@ -45,7 +45,7 @@ if ! podman image inspect "$PROMETHEUS_IMAGE" &>/dev/null; then
     # load the image
     podman load -i "$PROMETHEUS_IMAGE_PATH" || exit
     # get the tag
-    PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.36.1")
+    PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.41.0")
     # tag the image
     podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
 fi
@@ -61,7 +61,7 @@ if ! podman inspect --type container "$PROMETHEUS_CONTAINER_NAME" &>/dev/null; t
         # load the image
         podman load -i "$PROMETHEUS_IMAGE_PATH"
         # get the tag
-        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.36.1")
+        PROMETHEUS_IMAGE_ID=$(podman images --noheading --format "{{.Id}}" --filter label="org.opencontainers.image.version=v2.41.0")
         # tag the image
         podman tag "$PROMETHEUS_IMAGE_ID" "$PROMETHEUS_IMAGE"
     fi
