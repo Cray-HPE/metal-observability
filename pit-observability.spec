@@ -36,9 +36,9 @@ Source6: grafana.sh
 Source7: config.yml
 Source8: prometheus.yml
 Source9: csm-install-progress.json
-Source10: device-error.json 
-Source11: dhcp-error.json 
-Source12: pxe-error.json 
+Source10: device-error.json
+Source11: dhcp-error.json
+Source12: pxe-error.json
 Source13: known-issues-message-frequency.json
 Source14: datasource.yml
 Source15: dashboard.yml
@@ -95,7 +95,7 @@ rm -fr "%{name}-%{version}"
 mkdir "%{name}-%{version}"
 cd "%{name}-%{version}"
 
-%build  
+%build
 # Grok-exporter
 cp %{SOURCE1} grok-exporter.service
 cp %{SOURCE7} config.yml
@@ -122,9 +122,9 @@ sed -e 's,@@grafana-image@@,%{grafana_image},g' \
     -e 's,@@grafana-path@@,%{imagedir}/%{grafana_file},g' \
     %{SOURCE6} > grafana.sh
 # Consider switching to skopeo copy --all docker://<src> oci-archive:<dest>
-skopeo --override-arch amd64 --override-os linux copy docker://%{grok_image}  docker-archive:%{grok_file}
-skopeo --override-arch amd64 --override-os linux copy docker://%{prometheus_image}     docker-archive:%{prometheus_file}
-skopeo --override-arch amd64 --override-os linux copy docker://%{grafana_image}        docker-archive:%{grafana_file}
+skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{grok_image}  docker-archive:%{grok_file}
+skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{prometheus_image}     docker-archive:%{prometheus_file}
+skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{grafana_image}        docker-archive:%{grafana_file}
 skopeo --override-arch amd64 --override-os linux copy docker://%{skopeo_image}         docker-archive:%{skopeo_file}:%{skopeo_image}:%{skopeo_tag}
 
 %install

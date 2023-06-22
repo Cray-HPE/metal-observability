@@ -32,15 +32,13 @@ export ARCH := x86_64
 endif
 
 ifeq ($(VERSION),)
-export VERSION := $(shell git describe --tags | tr -s '-' '~' | tr -d '^v')
+export VERSION := $(shell git describe --tags | tr -s '-' '~' | sed 's/^v//')
 endif
 
-ROOTDIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+SPEC_FILE := ${NAME}.spec
+SOURCE_NAME := ${NAME}-${VERSION}
 
-SPEC_NAME ?= ${NAME}
-SPEC_FILE ?= ${SPEC_NAME}.spec
-BUILD_DIR ?= $(CURDIR)/build
-SOURCE_NAME ?= ${SPEC_NAME}-${VERSION}
+BUILD_DIR ?= $(PWD)/dist/rpmbuild
 SOURCE_PATH := ${BUILD_DIR}/SOURCES/${SOURCE_NAME}.tar.bz2
 
 .PHONY: rpm clean
@@ -49,20 +47,22 @@ rpm: rpm_package_source rpm_build
 
 prepare:
 	$(RM) -rf $(BUILD_DIR)
-	mkdir -p "$(BUILD_DIR)/SPECS" 
+	mkdir -p "$(BUILD_DIR)/SPECS"
 	mkdir -p "$(BUILD_DIR)/SOURCES"
 	cp $(SPEC_FILE) $(BUILD_DIR)/SPECS/
 	cp -r systemd/* $(BUILD_DIR)/SOURCES/
 	cp -r grafana/* $(BUILD_DIR)/SOURCES/
 
+# touch the archive before creating it to prevent 'tar: .: file changed as we read it' errors
 rpm_package_source:
-	tar --transform 'flags=r;s,^,/$(SOURCE_NAME)/,' --exclude .git --exclude dist -cvjf $(SOURCE_PATH) .
+	touch $(SOURCE_PATH)
+	tar --transform 'flags=r;s,^,/$(SOURCE_NAME)/,' --exclude .nox --exclude dist/rpmbuild --exclude ${SOURCE_NAME}.tar.bz2 -cvjf $(SOURCE_PATH) .
+
+rpm_build_source:
+	rpmbuild -bs $(BUILD_DIR)/SPECS/$(SPEC_FILE) --target ${ARCH} --define "_topdir $(BUILD_DIR)"
+
+rpm_build:
+	rpmbuild -ba $(BUILD_DIR)/SPECS/$(SPEC_FILE) --target ${ARCH} --define "_topdir $(BUILD_DIR)"
 
 clean:
 	$(RM) -rf $(BUILD_DIR)
-
-rpm_build: pit-observability.spec systemd/prometheus.service systemd/grok-exporter.service systemd/grafana.service systemd/prometheus.sh systemd/grafana.sh systemd/grok-exporter.sh systemd/config.yml grafana/csm-install-progress.json grafana/device-error.json grafana/dhcp-error.json grafana/pxe-error.json grafana/known-issues-message-frequency.json grafana/datasource.yml grafana/dashboard.yml grafana/pit-goss-test.json
-	rpmbuild --nodeps \
-		--define "_topdir $(BUILD_DIR)" \
-	    --define "_sourcedir $(BUILD_DIR)/SOURCES" \
-        -ba $(SPEC_FILE)
