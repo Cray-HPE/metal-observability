@@ -55,20 +55,20 @@ Requires: podman-cni-config
 %{?systemd_ordering}
 
 %define imagedir %{_sharedstatedir}/cray/container-images/%{name}
-
 %define current_branch %(echo ${GIT_BRANCH} | sed -e 's,/.*$,,')
+
 # Grok-exporter
 %define grok_tag   latest
 %define grok_image artifactory.algol60.net/csm-docker/stable/docker.io/grok-exporter/grok-exporter:%{grok_tag}
 %define grok_file  grok-%{grok_tag}.tar
 
 # Prometheus
-%define prometheus_tag  v2.36.1
+%define prometheus_tag  v2.41.0
 %define prometheus_image artifactory.algol60.net/csm-docker/stable/quay.io/prometheus/prometheus:%{prometheus_tag}
 %define prometheus_file  prometheus-%{prometheus_tag}.tar
 
 # Grafana
-%define grafana_tag   8.5.9
+%define grafana_tag   9.3.3
 %define grafana_image artifactory.algol60.net/csm-docker/stable/docker.io/grafana/grafana:%{grafana_tag}
 %define grafana_file  grafana-%{grafana_tag}.tar
 
