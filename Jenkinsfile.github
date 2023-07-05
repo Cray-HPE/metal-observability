@@ -42,7 +42,8 @@ pipeline {
 
     environment {
         DOCKER_ARGS = getDockerBuildArgs(name: getRepoName(), description: 'A podman image for nexus')
-        NAME = getRepoName()
+//        NAME = getRepoName()
+        NAME = 'metal-observability'
         IS_STABLE = "${isStable}"
         PRIMARY_NODE = "${env.NODE_NAME}"
         VERSION = sh(returnStdout: true, script: "git describe --tags | tr -s '-' '~' | sed 's/^v//'").trim()
