@@ -69,7 +69,7 @@ provides: pit-observability
 %define prometheus_file  prometheus-%{prometheus_tag}.tar
 
 # Grafana
-%define grafana_tag   9.3.3
+%define grafana_tag   11.5.2
 %define grafana_image artifactory.algol60.net/csm-docker/stable/docker.io/grafana/grafana:%{grafana_tag}
 %define grafana_file  grafana-%{grafana_tag}.tar
 
