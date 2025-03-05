@@ -70,7 +70,7 @@ provides: pit-observability
 
 # Grafana
 %define grafana_tag   11.5.2
-%define grafana_image artifactory.algol60.net/csm-docker/stable/docker.io/grafana/grafana:%{grafana_tag}
+%define grafana_image artifactory.algol60.net/csm-docker/unstable/docker.io/grafana/grafana:%{grafana_tag}
 %define grafana_file  grafana-%{grafana_tag}.tar
 
 %define skopeo_tag   latest
