@@ -74,6 +74,7 @@ provides: pit-observability
 %define grafana_file  grafana-%{grafana_tag}.tar
 
 %define skopeo_tag   latest
+%define skopeo_source_image artifactory.algol60.net/csm-docker/stable/quay.io/skopeo/stable:v1
 %define skopeo_image quay.io/skopeo/stable
 %define skopeo_file  skopeo-stable-%{skopeo_tag}.tar
 
@@ -126,7 +127,8 @@ sed -e 's,@@grafana-image@@,%{grafana_image},g' \
 skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{grok_image}  docker-archive:%{grok_file}
 skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{prometheus_image}     docker-archive:%{prometheus_file}
 skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{grafana_image}        docker-archive:%{grafana_file}
-skopeo --override-arch amd64 --override-os linux copy docker://%{skopeo_image}         docker-archive:%{skopeo_file}:%{skopeo_image}:%{skopeo_tag}
+# skopeo --override-arch amd64 --override-os linux copy docker://%{skopeo_image}         docker-archive:%{skopeo_file}:%{skopeo_image}:%{skopeo_tag}
+skopeo --override-arch amd64 --override-os linux copy --src-creds=%(echo $ARTIFACTORY_USER:$ARTIFACTORY_TOKEN) docker://%{skopeo_source_image}    docker-archive:%{skopeo_file}:%{skopeo_image}:%{skopeo_tag}
 
 %install
 install -D -m 0644 -t %{buildroot}%{_unitdir} grok-exporter.service
